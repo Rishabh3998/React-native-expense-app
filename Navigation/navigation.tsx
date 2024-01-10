@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import OpenManageExpenses from "../components/OpenManageExpenses/OpenManageExpenses";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -15,6 +16,7 @@ export const BottomTabsNavigator = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor: "#1F2D32",
+          height: 105,
         },
         headerTintColor: "#87959D",
         tabBarStyle: {
@@ -40,14 +42,7 @@ export const BottomTabsNavigator = () => {
               style={{ marginHorizontal: 10, marginVertical: 5 }}
             />
           ),
-          headerRight: () => (
-            <Ionicons
-              name="add"
-              color="#04A783"
-              size={28}
-              style={{ marginHorizontal: 10, marginVertical: 5 }}
-            />
-          ),
+          headerRight: () => <OpenManageExpenses />,
         }}
       />
       <Tab.Screen
@@ -64,14 +59,7 @@ export const BottomTabsNavigator = () => {
               style={{ marginHorizontal: 10, marginVertical: 5 }}
             />
           ),
-          headerRight: () => (
-            <Ionicons
-              name="add"
-              color="#04A783"
-              size={28}
-              style={{ marginHorizontal: 10, marginVertical: 5 }}
-            />
-          ),
+          headerRight: () => <OpenManageExpenses />,
         }}
       />
     </Tab.Navigator>
@@ -88,7 +76,11 @@ export const StackNavigator = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="ManageExpenses" component={ManageExpenses} />
+      <Stack.Screen
+        name="ManageExpenses"
+        component={ManageExpenses}
+        options={{ presentation: "modal" }}
+      />
     </Stack.Navigator>
   );
 };

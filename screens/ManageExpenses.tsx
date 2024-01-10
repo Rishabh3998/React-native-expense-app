@@ -1,6 +1,14 @@
+import { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const ManageExpenses = () => {
+const ManageExpenses = ({ navigation }: any) => {
+  useEffect(() => {
+    navigation.setOptions({
+      headerTintColor: "#87959D",
+      headerStyle: { backgroundColor: "#1F2D32" },
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.rootScreen}>
       <Text style={styles.title}>Manage Expenses</Text>

@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
+import Expenses from "../components/ExpensesOutput/Expenses";
+import { DUMMY_DATA } from "../data/data";
 
 const RecentExpenses = () => {
   return (
     <View style={styles.rootScreen}>
-      <Text style={styles.title}>Recent Expenses</Text>
+      <Expenses expenses={DUMMY_DATA} periodLabel="Last 7 days" />
     </View>
   );
 };

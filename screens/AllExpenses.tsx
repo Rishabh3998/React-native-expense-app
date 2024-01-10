@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
+import Expenses from "../components/ExpensesOutput/Expenses";
+import { DUMMY_DATA } from "../data/data";
 
 const AllExpenses = () => {
   return (
     <View style={styles.rootScreen}>
-      <Text style={styles.title}>All Expenses</Text>
+      <Expenses expenses={DUMMY_DATA} periodLabel="Total" />
     </View>
   );
 };
@@ -16,6 +18,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#131B23",
+    width: "100%",
   },
   title: {
     color: "#fff",

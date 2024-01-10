@@ -12,3 +12,16 @@ const App = () => {
 };
 
 export default App;
+
+const styles = StyleSheet.create({
+  rootScreen: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  periodLabel: {
+    color: "White",
+    fontSize: 20,
+    fontWeight: "500",
+  },
+});
