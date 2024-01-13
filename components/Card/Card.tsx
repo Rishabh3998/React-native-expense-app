@@ -9,12 +9,15 @@ interface ICard {
     amount: number;
     date: Date;
   };
+  customStyles?: any;
 }
 
-const Card = ({ item }: ICard) => {
+const Card = ({ item, customStyles }: ICard) => {
   const navigation = useNavigation<any>();
   const handleClickItem = () => {
-    navigation.navigate("ManageExpenses");
+    navigation.navigate("ManageExpenses", {
+      id: item.id,
+    });
   };
 
   return (
@@ -22,7 +25,7 @@ const Card = ({ item }: ICard) => {
       style={({ pressed }) => (pressed ? styles.pressed : null)}
       onPress={handleClickItem}
     >
-      <View style={styles.rootContainer}>
+      <View style={[styles.rootContainer, customStyles]}>
         <View>
           <Text style={[styles.text, styles.description]}>
             {item.description}

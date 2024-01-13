@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 import Expenses from "../components/ExpensesOutput/Expenses";
-import { DUMMY_DATA } from "../data/data";
+import { useContext } from "react";
+import { ExpensesContext } from "../store/ExpensesContext";
 
 const AllExpenses = () => {
+  const expensesCtx = useContext(ExpensesContext);
   return (
     <View style={styles.rootScreen}>
-      <Expenses expenses={DUMMY_DATA} periodLabel="Total" />
+      <Expenses expenses={expensesCtx.expenses} periodLabel="Total" />
     </View>
   );
 };
