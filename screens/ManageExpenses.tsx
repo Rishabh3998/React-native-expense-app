@@ -1,10 +1,10 @@
 import { useContext, useLayoutEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import Card from "../components/Card/Card";
-import { DUMMY_DATA } from "../data/data";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/Button/Button";
 import { ExpensesContext } from "../store/ExpensesContext";
+import { useCreateExpense } from "../utils/http";
 
 const ManageExpenses = ({ navigation, route }: any) => {
   const expenseId = route?.params?.id;
@@ -47,8 +47,6 @@ const ManageExpenses = ({ navigation, route }: any) => {
   const handleConfirm = () => {
     const amountIsInvalid = isNaN(Number(amount)) || Number(amount) <= 0;
     const descriptionIsInvalid = !description || description?.trim() === "";
-
-    console.log({ amountIsInvalid, descriptionIsInvalid, description, amount });
     if (amountIsInvalid || descriptionIsInvalid) {
       Alert.alert("Invalid data", "Please fill required data", [
         {
@@ -57,11 +55,13 @@ const ManageExpenses = ({ navigation, route }: any) => {
         },
       ]);
     } else {
-      expenseCtx.addExpense({
+      const payload = {
         amount: Number(amount),
         description: description,
         date: new Date(),
-      });
+      };
+      useCreateExpense(payload);
+      expenseCtx.addExpense(payload);
       navigation.goBack();
     }
   };
