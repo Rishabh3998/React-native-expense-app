@@ -4,11 +4,17 @@ import Card from "../components/Card/Card";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/Button/Button";
 import { ExpensesContext } from "../store/ExpensesContext";
-import { useCreateExpense } from "../utils/http";
+import {
+  useCreateExpense,
+  useDeleteExpense,
+  useUpdateExpense,
+} from "../utils/http";
+import Loading from "../components/LoadingOverlay/Loading";
 
 const ManageExpenses = ({ navigation, route }: any) => {
   const expenseId = route?.params?.id;
   const expenseCtx = useContext(ExpensesContext);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const initialDescription: any = expenseCtx?.expenses?.find(
     (i: any) => i?.id === expenseId
@@ -38,13 +44,17 @@ const ManageExpenses = ({ navigation, route }: any) => {
   );
 
   const handleDelete = () => {
+    setIsSubmitting(true);
+    useDeleteExpense(expenseId);
     expenseCtx.deleteExpense(expenseId);
+    setIsSubmitting(false);
     navigation.goBack();
   };
   const handleCancel = () => {
     navigation.goBack();
   };
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    setIsSubmitting(true);
     const amountIsInvalid = isNaN(Number(amount)) || Number(amount) <= 0;
     const descriptionIsInvalid = !description || description?.trim() === "";
     if (amountIsInvalid || descriptionIsInvalid) {
@@ -60,15 +70,19 @@ const ManageExpenses = ({ navigation, route }: any) => {
         description: description,
         date: new Date(),
       };
-      useCreateExpense(payload);
-      expenseCtx.addExpense(payload);
+      const id = await useCreateExpense(payload);
+      expenseCtx.addExpense({ ...payload, id });
       navigation.goBack();
     }
+    setIsSubmitting(false);
   };
 
   const handleUpdate = () => {
     expenseCtx.updateExpense(expenseId, {
-      id: expenseId,
+      amount: Number(amount),
+      description: description,
+    });
+    useUpdateExpense(expenseId, {
       amount: Number(amount),
       description: description,
     });
@@ -76,39 +90,50 @@ const ManageExpenses = ({ navigation, route }: any) => {
   };
 
   return expenseId ? (
-    <View style={styles.rootScreen}>
-      <View style={styles.itemContainer}>
-        <Card item={currentItem} customStyles={styles.cardContainer} />
-        <Ionicons name="trash" color="#fff" size={30} onPress={handleDelete} />
+    isSubmitting ? (
+      <Loading />
+    ) : (
+      <View style={styles.rootScreen}>
+        <View style={styles.itemContainer}>
+          <Card item={currentItem} customStyles={styles.cardContainer} />
+          <Ionicons
+            name="trash"
+            color="#fff"
+            size={30}
+            onPress={handleDelete}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            value={description}
+            cursorColor="#fff"
+            placeholder="Enter description"
+            placeholderTextColor="#fff"
+            style={styles.input}
+            onChangeText={(value) => setDescription(value)}
+            selectionColor="#fff"
+          />
+          <TextInput
+            value={amount}
+            cursorColor="#fff"
+            placeholder="Enter amount"
+            placeholderTextColor="#fff"
+            style={styles.input}
+            onChangeText={(value) => setAmount(value)}
+            selectionColor="#fff"
+            keyboardType="decimal-pad"
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button backgroundColor="transparent" onPress={handleCancel}>
+            Cancel
+          </Button>
+          <Button onPress={handleUpdate}>Update</Button>
+        </View>
       </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          value={description}
-          cursorColor="#fff"
-          placeholder="Enter description"
-          placeholderTextColor="#fff"
-          style={styles.input}
-          onChangeText={(value) => setDescription(value)}
-          selectionColor="#fff"
-        />
-        <TextInput
-          value={amount}
-          cursorColor="#fff"
-          placeholder="Enter amount"
-          placeholderTextColor="#fff"
-          style={styles.input}
-          onChangeText={(value) => setAmount(value)}
-          selectionColor="#fff"
-          keyboardType="decimal-pad"
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button backgroundColor="transparent" onPress={handleCancel}>
-          Cancel
-        </Button>
-        <Button onPress={handleUpdate}>Update</Button>
-      </View>
-    </View>
+    )
+  ) : isSubmitting ? (
+    <Loading />
   ) : (
     <View style={styles.rootScreen}>
       <View style={styles.inputContainer}>
